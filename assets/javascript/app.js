@@ -1,5 +1,5 @@
  
-  var topics = ["happy","sad","messi","ronalado","angry","vijay","ajeeth"]
+  var topics = ["happy","sad","messi","ronalado","angry","vijay"]
   var athleteBtn;
   var athleteImage;
 
