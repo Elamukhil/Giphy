@@ -1,5 +1,5 @@
  
-  var topics = ["happy","sad","dhoni","messi","angry","ronaldo"]
+  var topics = ["happy","sad","messi","ronalado","angry","vijay","ajeeth"]
   var athleteBtn;
   var athleteImage;
 
@@ -94,8 +94,11 @@
       });
 }
 
- 
+  //When submit/add button is clicked in the "Add your favorite athlete" section, add athlete-input from the search box to topics array.
   $("#submit-button").on("click", function(event) {
+
+    //The following code prevents the submit/add button from trying to submit the form.
+    //Using a form so that the user can press Enter to search instead of clicking the button.
     event.preventDefault();
     //Grab the input from the text box and change the value to lower case.
     var athleteInput = $("#athlete-input").val().toLowerCase();
@@ -103,17 +106,17 @@
     //Remove the athlete's name from text box after user clicks add/submit-button.
     $("#athlete-input").val("");
 
-    
+    //If the input from the search box is already in the topics array, alert to the user that the athlete is already available.
     if (topics.indexOf(athleteInput) > -1) {
       alert(athleteInput + " is already available.");
     }
 
-   
+    //If text box is empty, don't create button. Nothing should happen when user clicks Add icon.
     else if (athleteInput === "" || athleteInput === null) {
       return false;
     }
 
-   
+    //else if the input from the search box is not in the topics array, add athlete to topics array and create button for athlete.
     else if (topics.indexOf(athleteInput) === -1) {
     //add or push athleteInput from text box to topics array.
     topics.push(athleteInput);
@@ -126,33 +129,37 @@
   //Call createButtons() to display initial buttons.
   createButtons();
 
-
+//Create click event for all elements with a class of athlete-btn.
 $(document).on("click", ".athlete-btn", displayAthleteImages);
 
-
+//This is the function to display the gif image that appears in the top right corner of site on md sized screens. 
+//Image appears right below header on sm or xs screens.
 function displayHeaderImage () {
     var queryURL = "https://api.giphy.com/v1/stickers/search?q=basketball&api_key=XY7nVVpWCMamCT4f71i9FHyGJHT08bo5";
     
-  //Our jQuery AJAX method. Perform AJAX GET request to the queryURL to get data from giphy API.
+ 
     $.ajax({
         url: queryURL,
         method: "GET"
       })
 
-      //After the data from the AJAX request comes back.
+      
       .done(function(response) {
         console.log(response);
         var results = response.data
 
-        //Create div element to hold gif image.. 
+        
         var gifDiv = $("<div class='item'>");
 
+        
         var headerImageUrl = results[3].images.fixed_height.url;
 
         var headerImage = $("<img>");
         headerImage.attr("id", "spinning-ball");
         headerImage.attr("src", headerImageUrl);
         headerImage.addClass ("img-fluid gif");
+
+       
         gifDiv.append(headerImage);
 
         $("#main-header-image").append(gifDiv).addClass("mt-2");
