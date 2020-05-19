@@ -1,147 +1,174 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title>GIPHY</title>
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+ 
+  var topics = ["happy","sad","messi","ronalado","angry","vijay","ajeeth"]
+  var athleteBtn;
+  var athleteImage;
 
-	<link rel="stylesheet" type="text/css" href="https://bootswatch.com/4/darkly/bootstrap.min.css">
+  function createButtons() {
+  $("#athlete-btn-div").empty();
 
-	<!--<link rel="stylesheet" type="text/css" href="assets/css/reset.css">-->
+  for (var i=0; i < topics.length; i++) {
+    var athleteBtn = $("<button>");
+    athleteBtn.text(topics[i]);
+    athleteBtn.attr("data-name", topics[i]);
+    athleteBtn.addClass("btn btn-primary p-2 mr-3 mb-2 athlete-btn");
+    $("#athlete-btn-div").append(athleteBtn);
+  }
+}
 
-	<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+  function displayAthleteImages() {
+    $("#results-div-col1").empty();
+    $("#results-div-col2").empty();
+    $("#results-div-col3").empty();
+    $("#click-to-play-text").empty();
 
-	
-	<link rel="stylesheet" type="text/css" href="assets/css/style.css">
+    var athlete = $(this).attr("data-name");
+    var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + athlete + "&api_key=XY7nVVpWCMamCT4f71i9FHyGJHT08bo5&limit=20";
 
-	
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    $.ajax({
+        url: queryURL,
+        method: "GET"
+      })
 
-	
-	<script src="https://use.fontawesome.com/abd289e58f.js"></script>
-</head>
+      .done(function(response) {
+        console.log(response);
+        var results = response.data;
+        $("#click-to-play-text").append("<h4>" + "Click a gif to play. Click again to pause." + "</h4>");
 
-<body class="bg-light">
-	<div class="container">
-		<div class="row">
-			<div class="col-xs-12 col-sm-12 col-md-12">
-				<div class="card mb-4 bg-primary">
-					<div class="card-body">
-					    <h1 class="card-title">GIPHY</h1>
-					    <h5 class="card-text">Search for your favorite gifs</h5>
-					    <img class="pr-3" src="assets/images/if_sports-apparel-12_809686.svg" alt="basketball">
-					    <img class="pr-3" src="assets/images/if_sports-apparel-17_809681.svg" alt="football">
-					    <img class="pr-3" src="assets/images/if_sports-apparel-13_809685.svg" alt="baseball">
-					    <img class="pr-3" src="assets/images/if_sports-apparel-11_809687.svg" alt="soccer ball">
-					</div>
-				</div>
-			</div>
-			<div class="col-xs-12 col-sm-12 col-md-2" id="main-header-image">
-			</div>
+        for (var i = 0; i < results.length; i++) {
 
-		</div>
-		</br>
+          if (results[i].rating !== "r" && results[i].rating !== "pg-13") {
 
-		<div class="row">
-			<div class="col-md-6 col-sm-13 col-xs-13 mb-3" id="giphy-buttons">
-				<div class="card">
-				  <div class="card-header bg-primary text-white">
-				    <h5><img src="assets/images/if_athlete_84380.png" alt="athlete"> Select an gif</h5>
-				  </div>
-				  
-				  <div class="card-body bg-secondary" id="athlete-btn-div">
-				  </div>
-				</div>
-			</div>
+            
+            var gifDiv = $("<div class='item'>");
+            var rating = results[i].rating;
 
-			<div class="col-md-6 col-sm-12 col-xs-12 mb-2">
-				<div class="card">
-					<div class="card-header bg-primary text-white">
-						<h5><img class="pr-2" src="assets/images/if_athlete--add_84261.png" alt="athlete">Add your favorite gifs</h5>
-					</div>
-					<div class="card-body bg-secondary">
-						<p>For best results, enter the correct spelling. For example, Sachin.</p>
-						<form class="form-inline my-2 my-lg-0">
-							<input class="form-control mr-sm-2" type="search" placeholder="Sachin" aria-label="Search" id="athlete-input">
-		      				<button class="btn btn-dark my-2 my-sm-0" type="submit" id="submit-button"><i class="fa fa-plus" aria-hidden="true"></i></button>
-		    			</form>
-					</div>
-				</div>
-			</div>
-		</div>
+            //Display rating of gif.
+            var p = $("<p>").text("Rating: " + rating);
+            var athleteImage = $("<img>");
+            athleteImage.attr("src", results[i].images.fixed_height_still.url);
+            athleteImage.attr("data-still", results[i].images.fixed_height_still.url);
+            athleteImage.attr("data-animate", results[i].images.fixed_height.url);
+            athleteImage.attr("data-state", "still");
+            athleteImage.addClass ("img-fluid gif border border-primary");
 
-		<div class="row pt-4">
-			<div class="col-md-12">
-				<div class="card">
-					<div class="card-header bg-primary text-white">
-				    	<h5><img src="assets/images/if_icon-111-search_314478.svg" alt="magnifying glass icon"> Gif search results</h5>
-					</div>
-					<div class="card-body bg-secondary" id="results-div">
-						<div class="row">
-							
-							<div class="col-md-12" id="click-to-play-text">
-							</div>
-						</div>
+            gifDiv.prepend(p);
+     
+            gifDiv.prepend(athleteImage);
 
-						<div class="row">
-							
-							<div class="col-xs-12 col-sm-12 col-md-4" id="results-div-col1">
-								
-							</div>
-							
-							<div class="col-xs-12 col-sm-12 col-md-4" id="results-div-col2">
-								
-							</div>
-							
-							<div class="col-xs-12 col-sm-12 col-md-4" id="results-div-col3">
-								
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
+            //Add the first three gifs retrieved from the GIPHY API call to the results-div-col1 column in the HTML.
+            if (i >= 0 && i < 7) {
+              $("#results-div-col1").append(gifDiv);
+            }
+
+            //Then, add the next four gifs retrieved from the GIPHY API call to the results-div-col2 column in the HTML.
+            else if (i >= 7 && i < 14) {
+              $("#results-div-col2").append(gifDiv);
+            }
+
+            //Finally, add the last three gifs retrieved from the GIPHY API call to the results-div-col3 column in the HTML.
+            else {
+              $("#results-div-col3").append(gifDiv);
+            }
+          }
 
 
-	</div>
+        }
 
-</br>
-<script type="text/javascript" src="assets/javascript/app.js"></script>
- <div class="container">
-		<div class="row">
-			<div class="col-xs-12 col-sm-12 col-md-12">
-				<div class="card mb-4 bg-primary">
-					<div class="card-body">
-					    <h1 class="card-title">About us</h1>
-					    <h5 class="card-text">This is a webapp used to get gifs related to our search.It gives the latest gifs using Giphy api.</h5>
-					</div>
-				</div>
-			</div>
-			<div class="col-xs-12 col-sm-12 col-md-2" id="main-header-image">
-			</div>
+        //When the user clicks a gif in the search results section...
+        $(".gif").on("click", function() {
+          // The attr jQuery method allows us to get or set the value of any attribute on our HTML element.
+          var state = $(this).attr("data-state");
+          // If the clicked image's state is still, update its src attribute to what its data-animate value is.
+          // Then, set the image's data-state to animate
+          // Else set src to the data-still value
+          if (state === "still") {
+            $(this).attr("src", $(this).attr("data-animate"));
+            $(this).attr("data-state", "animate");
+          } 
+          else {
+            $(this).attr("src", $(this).attr("data-still"));
+            $(this).attr("data-state", "still");
+          }
+        });
 
-		</div>
- <div class="container">
-		<div class="row">
-			<div class="col-xs-12 col-sm-12 col-md-12">
-				<div class="card mb-4 bg-primary">
-					<div class="card-body">
-					    <h1 class="card-title">Contact us</h1>
-					    <h5 class="card-text">Elamukhil.</h5>
-						<h5 class="card-text">Website : Giphy.in.</h5>
-						
-						 <div class="social-links">
-							<a href="#your link" class="twitter"><i class="fa fa-twitter"></i></a>
-							<a href="#" class="facebook"><i class="fa fa-facebook"></i></a>
-							<a href="#" class="instagram"><i class="fa fa-instagram"></i></a>
-							<a href="#" class="google-plus"><i class="fa fa-google-plus"></i></a>
-							<a href="#" class="linkedin"><i class="fa fa-linkedin"></i></a>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="col-xs-13 col-sm-12 col-md-2" id="main-header-image">
-			</div>
+      });
+}
 
-		</div>
-</body>
-</html>
+  //When submit/add button is clicked in the "Add your favorite athlete" section, add athlete-input from the search box to topics array.
+  $("#submit-button").on("click", function(event) {
+
+    //The following code prevents the submit/add button from trying to submit the form.
+    //Using a form so that the user can press Enter to search instead of clicking the button.
+    event.preventDefault();
+    //Grab the input from the text box and change the value to lower case.
+    var athleteInput = $("#athlete-input").val().toLowerCase();
+
+    //Remove the athlete's name from text box after user clicks add/submit-button.
+    $("#athlete-input").val("");
+
+    //If the input from the search box is already in the topics array, alert to the user that the athlete is already available.
+    if (topics.indexOf(athleteInput) > -1) {
+      alert(athleteInput + " is already available.");
+    }
+
+    //If text box is empty, don't create button. Nothing should happen when user clicks Add icon.
+    else if (athleteInput === "" || athleteInput === null) {
+      return false;
+    }
+
+    //else if the input from the search box is not in the topics array, add athlete to topics array and create button for athlete.
+    else if (topics.indexOf(athleteInput) === -1) {
+    //add or push athleteInput from text box to topics array.
+    topics.push(athleteInput);
+    console.log(topics);
+    //call createButtons, which handles the processing of topics array.
+    createButtons();
+    }
+  });
+
+
+  createButtons();
+
+
+$(document).on("click", ".athlete-btn", displayAthleteImages);
+
+
+function displayHeaderImage () {
+    var queryURL = "https://api.giphy.com/v1/stickers/search?q=basketball&api_key=XY7nVVpWCMamCT4f71i9FHyGJHT08bo5";
+    
+ 
+    $.ajax({
+        url: queryURL,
+        method: "GET"
+      })
+
+      
+      .done(function(response) {
+        console.log(response);
+        var results = response.data
+
+       
+        var gifDiv = $("<div class='item'>");
+
+       
+        var headerImageUrl = results[3].images.fixed_height.url;
+
+        var headerImage = $("<img>");
+        headerImage.attr("id", "spinning-ball");
+        headerImage.attr("src", headerImageUrl);
+        headerImage.addClass ("img-fluid gif");
+
+       
+        gifDiv.append(headerImage);
+
+        $("#main-header-image").append(gifDiv).addClass("mt-2");
+      });
+
+}
+
+displayHeaderImage();
+
+
+
+
+
